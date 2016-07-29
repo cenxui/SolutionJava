@@ -1,6 +1,7 @@
 package jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -52,16 +53,14 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * DROP TABLE deletes all rows and removes the table definition from the database
  * ALTER TABLE adds or removes a column from a table
  * 
- * 
- * 
  */
 
 
 public class SolutionMySQL {
-	
 
 	public static void main(String[] args) {
 		String dbName = "mydbname";
+		String tableName = "student";
 		MysqlDataSource dataSource = new MysqlDataSource();
 		dataSource.setURL("jdbc:mysql://localhost");
 		dataSource.setPort(3306);
@@ -69,26 +68,96 @@ public class SolutionMySQL {
 		dataSource.setPassword("1234");
 		dataSource.setServerName("localhost");
 		dataSource.setDatabaseName(dbName);
-		
-		
+		Connection conn = null;
 		try {
-			Connection conn = dataSource.getConnection();
+			conn = dataSource.getConnection();
 			System.out.println("database suceed");
-			Statement stmt = conn.createStatement();
+			addColumnToTable(conn, dbName, tableName, "MONEY", "Float");
+			
+		} catch (SQLException e) {
+			System.out.println("database connction fail");
+			e.printStackTrace();
+		} 
+	}
+	
+	/**
+	 * DDL commands
+	 * standard method to create table 
+	 * @param conn
+	 * @param dbName
+	 * @throws SQLException
+	 */
+	
+	public static void createStudentTable(Connection conn ,String dbName) throws SQLException {
+		Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
 			String createString =
 			        "create table " + dbName +
 			        ".STUDENT " +
 			        "(STUDENT_ID integer NOT NULL, " +
 			        "STUDENT_NAME varchar(40) NOT NULL, " +
-			        "PRIMARY KEY (STUDENT_ID))";
-			
+			        "PRIMARY KEY (STUDENT_ID))";		
 			stmt.executeUpdate(createString);
-			
 			System.out.println("student table create");
 		} catch (SQLException e) {
-			System.out.println("student table fail");
 			e.printStackTrace();
+			System.out.println("student table fail");
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+		}	
+	}
+	
+	public static void addColumnToTable(Connection conn, String dbName, String tableName, 
+			String columnName, String type) throws SQLException {
+		Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+			String createString = 
+					"alter table " + dbName +
+					"." + tableName + " " + 
+					"ADD " + columnName+ " " + type;
+			stmt.executeUpdate(createString);
+			System.out.println(dbName+ " "+ tableName + "  add column" + columnName + "suceed.");			
+		} catch (SQLException e) {		
+			System.out.println(dbName+ " "+ tableName + "  add column" + columnName + "fail.");
+			e.printStackTrace();
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
 		}
 	}
-
-}
+	
+	/**
+	 * this method use prepare statement
+	 * add student to table
+	 * @param conn
+	 * @param dbName
+	 * @param id
+	 * @param sdName
+	 * @throws SQLException
+	 */
+	
+	public static void addStudent(Connection conn, String dbName ,int id, String sdName) throws SQLException  {
+		String sql = " insert into " + dbName+".STUDENT (STUDENT_ID, STUDENT_NAME)"
+		        + " values (?, ?)";
+		PreparedStatement stm = null;
+		try {
+			stm = conn.prepareStatement(sql);
+			stm.setInt(1,id);
+			stm.setString(2, sdName);
+			stm.execute();
+		} catch (SQLException e) {
+			System.out.println("add " + sdName+ "to" + dbName + "fail");
+			e.printStackTrace();
+		} finally {
+			if (stm != null) {
+				stm.close();
+			}
+			conn.setAutoCommit(true);
+		}		
+	}
+} 
