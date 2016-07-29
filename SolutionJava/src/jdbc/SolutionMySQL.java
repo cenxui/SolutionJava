@@ -1,7 +1,9 @@
 package jdbc;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -53,6 +55,9 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * DROP TABLE deletes all rows and removes the table definition from the database
  * ALTER TABLE adds or removes a column from a table
  * 
+ * 
+ * The way to allow two or more statements to be grouped into a transaction is to disable the auto-commit mode. 
+ * This is demonstrated in the following code, where con is an active connection:con.setAutoCommit(false);
  */
 
 
@@ -72,7 +77,7 @@ public class SolutionMySQL {
 		try {
 			conn = dataSource.getConnection();
 			System.out.println("database suceed");
-			addColumnToTable(conn, dbName, tableName, "MONEY", "Float");
+			querryRow(conn, dbName, tableName, " * ");
 			
 		} catch (SQLException e) {
 			System.out.println("database connction fail");
@@ -118,11 +123,32 @@ public class SolutionMySQL {
 			String createString = 
 					"alter table " + dbName +
 					"." + tableName + " " + 
-					"ADD " + columnName+ " " + type;
+					"ADD " + columnName+ " " + type + "default 0";
 			stmt.executeUpdate(createString);
-			System.out.println(dbName+ " "+ tableName + "  add column" + columnName + "suceed.");			
+			System.out.println(dbName+ " "+ tableName + "  add column " + columnName + " suceed.");			
 		} catch (SQLException e) {		
-			System.out.println(dbName+ " "+ tableName + "  add column" + columnName + "fail.");
+			System.out.println(dbName+ " "+ tableName + "  add column " + columnName + " fail.");
+			e.printStackTrace();
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+	
+	public static void removeColumnFromTable(Connection conn, String dbName, String tableName,
+			String columnName ) throws SQLException {
+		Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+			String createString = 
+					"alter table " + dbName +
+					"." + tableName + " " + 
+					"DROP COLUMN " + columnName;
+			stmt.executeUpdate(createString);
+			System.out.println(dbName+ " "+ tableName + "  drop column" + columnName + "suceed.");			
+		} catch (SQLException e) {		
+			System.out.println(dbName+ " "+ tableName + "  drop column" + columnName + "fail.");
 			e.printStackTrace();
 		} finally {
 			if (stmt != null) {
@@ -159,5 +185,26 @@ public class SolutionMySQL {
 			}
 			conn.setAutoCommit(true);
 		}		
+	}
+	
+	/**
+	 * query the table 
+	 * @param conn
+	 * @param dbName
+	 * @param tableName
+	 * @param sdName
+	 */
+	
+	public static void querryRow(Connection conn, String dbName, String tableName , String sdName) {
+		Statement stm = null;
+		try {
+			stm = conn.createStatement();
+			ResultSet rs = stm.executeQuery("SELECT " + sdName+ " FROM " + dbName + "." + tableName);
+			while (rs.next()) {
+				System.out.println(rs.getString(1)+ "\t" + rs.getString(2) + "\t" + rs.getInt(3));			
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 } 
