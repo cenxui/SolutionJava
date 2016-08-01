@@ -8,8 +8,8 @@ package jdbc;
 public class SolutionMongoDB {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
+		MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
 	}
 
 }
