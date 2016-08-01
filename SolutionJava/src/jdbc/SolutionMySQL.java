@@ -1,6 +1,5 @@
 package jdbc;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,7 +76,7 @@ public class SolutionMySQL {
 		try {
 			conn = dataSource.getConnection();
 			System.out.println("database suceed");
-			querryRow(conn, dbName, tableName, " * ");
+			transaction(conn, dbName, tableName, "MONEY");
 			
 		} catch (SQLException e) {
 			System.out.println("database connction fail");
@@ -163,48 +162,77 @@ public class SolutionMySQL {
 	 * @param conn
 	 * @param dbName
 	 * @param id
-	 * @param sdName
+	 * @param columnName
 	 * @throws SQLException
 	 */
 	
-	public static void addStudent(Connection conn, String dbName ,int id, String sdName) throws SQLException  {
+	public static void addStudent(Connection conn, String dbName ,int id, String columnName) throws SQLException  {
 		String sql = " insert into " + dbName+".STUDENT (STUDENT_ID, STUDENT_NAME)"
 		        + " values (?, ?)";
 		PreparedStatement stm = null;
 		try {
 			stm = conn.prepareStatement(sql);
 			stm.setInt(1,id);
-			stm.setString(2, sdName);
+			stm.setString(2, columnName);
 			stm.execute();
 		} catch (SQLException e) {
-			System.out.println("add " + sdName+ "to" + dbName + "fail");
+			System.out.println("add " + columnName+ "to" + dbName + "fail");
 			e.printStackTrace();
 		} finally {
 			if (stm != null) {
 				stm.close();
 			}
-			conn.setAutoCommit(true);
 		}		
 	}
 	
 	/**
 	 * query the table 
-	 * @param conn
-	 * @param dbName
+	 * @param conn connection object form DriverManager
+	 * @param dbName 
 	 * @param tableName
-	 * @param sdName
+	 * @param columName
 	 */
 	
-	public static void querryRow(Connection conn, String dbName, String tableName , String sdName) {
+	public static void querryRow(Connection conn, String dbName, String tableName , String columName) {
 		Statement stm = null;
 		try {
 			stm = conn.createStatement();
-			ResultSet rs = stm.executeQuery("SELECT " + sdName+ " FROM " + dbName + "." + tableName);
+			ResultSet rs = stm.executeQuery("SELECT " + columName+ " FROM " + dbName + "." + tableName);
 			while (rs.next()) {
 				System.out.println(rs.getString(1)+ "\t" + rs.getString(2) + "\t" + rs.getInt(3));			
 			}			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void transaction(Connection conn, String dbName, String tableName , String columName) throws SQLException {
+	
+		PreparedStatement stm1 = null; 
+		PreparedStatement stm2 = null;
+		try {
+			String createString1 = "UPDATE " + dbName+ "." + 
+					tableName + " SET " + "MONEY=500" + " WHERE STUDENT_NAME=\"John\"";
+			String createString2 =  "UPDATE " + dbName+ "." + 
+					tableName + " SET " + "MONEY=500" + " WHERE STUDENT_NAME=\"Merry\"";
+			conn.setAutoCommit(false);
+			stm1 = conn.prepareStatement(createString1);
+			stm2 = conn.prepareStatement(createString2);
+			stm1.executeUpdate();
+			stm2.executeUpdate();		
+			conn.commit();
+			System.out.println("transaction seceed.");
+		} catch (SQLException e) {
+			System.out.println("transaction fail.");
+			e.printStackTrace();
+		} finally {
+			if (stm1 != null) {
+				stm1.close();
+			}
+			if (stm2 != null) {
+				stm2.close();
+			}
+			conn.setAutoCommit(true);
 		}
 	}
 } 
