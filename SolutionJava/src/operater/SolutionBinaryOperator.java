@@ -4,7 +4,7 @@ public class SolutionBinaryOperator {
 
 	public static void main(String[] args) {
 		add();
-
+		sub();
 	}
 	
 	private static void add() {
@@ -21,7 +21,6 @@ public class SolutionBinaryOperator {
 		System.out.println("++y : " + ++y);
 		// this will get 1 
 		System.out.println("y : " + y);
-		
 	}
 	
 	private static void sub() {

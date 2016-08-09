@@ -1,6 +1,6 @@
 package operater;
 
-public class ConditionalExpressions {
+public class SolutionConditionalExpressions {
 
 	public static void main(String[] args) {
 		testCondition();
