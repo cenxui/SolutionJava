@@ -3,7 +3,15 @@ package string;
 public class SolutionString {
 
 	public static void main(String[] args) {
-		trimString();
+
+	}
+	
+	private static void hashCodeString() {
+		String string1 = "John";
+		System.out.println(string1.hashCode());
+		String string2 = new String("John");
+		System.out.println(string2.hashCode());
+		System.out.println(string1.equals(string2));
 	}
 	
 	private static void trimString() {

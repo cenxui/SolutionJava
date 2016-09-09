@@ -15,8 +15,8 @@ public class SolutionTime {
 	
 	private void name() {
 		r.run();
-		r.x = 0 ;
-		
+//		r.x = 0 ;
+//		
 		new Runnable() {
 			
 			@Override

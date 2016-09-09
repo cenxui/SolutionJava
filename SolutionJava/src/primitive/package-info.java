@@ -5,4 +5,4 @@
  * @author xenxui
  *
  */
-package integer;
+package primitive;

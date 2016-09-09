@@ -27,6 +27,8 @@ public class SolutionGenericType {
 		arrayList3 = new ArrayList<Number>();
 		arrayList3 = new ArrayList<Integer>();// inherit type is permitted
 //		arrayList3 = new ArrayList<Object>(); //super type is not permitted
+//		arrayList3.add(new Object());add super type is not permitted
+//		arrayList3.add(new Integer(10));// add inherit type is permitted
 	
 		ArrayList<? super Number> arrayList4 = new ArrayList<>();
 		arrayList4 = new ArrayList<Number>();

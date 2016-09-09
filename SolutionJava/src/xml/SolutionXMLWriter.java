@@ -49,12 +49,8 @@ public class SolutionXMLWriter {
 					xtw.close();
 				}
 			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-
 	}
-	
 }

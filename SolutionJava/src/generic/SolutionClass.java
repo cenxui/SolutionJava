@@ -16,7 +16,6 @@ public class SolutionClass {
 			System.out.println(class1.getName());
 		}
 		
-		
 	}
 	public static class Student implements Readable{
 		public String getName() {

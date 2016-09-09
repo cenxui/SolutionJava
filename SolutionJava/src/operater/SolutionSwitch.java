@@ -20,4 +20,25 @@ public class SolutionSwitch {
 		}
 	}
 	
+	private static void switchEnum() {
+		Season season = Season.Fall;
+		switch (season) {
+		case Spring:  //automatically convert Season.Spring to Spring
+			
+			break;
+		case Fall: // must enum type cannot 0 or 1 ,etc
+			
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	enum Season {
+		Spring,
+		Summer,
+		Fall,
+		Winter
+	}
 }

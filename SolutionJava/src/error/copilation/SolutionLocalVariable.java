@@ -10,7 +10,7 @@ public class SolutionLocalVariable {
 			h = 4;
 			q = 0.5;
 		}	
-		result = q*b*h + 3;// error will show in here ask you to assign q b h values before using it.
+//		result = q*b*h + 3;// error will show in here ask you to assign q b h values before using it.
 		
 	}
 

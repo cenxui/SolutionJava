@@ -12,7 +12,7 @@ public class SolutionUnreachable {
 		for(;;) { //the same as while loop and do while
 			//no break inside
 		}
-		System.out.println("");
+//		System.out.println("");
 	}
 	
 	private void logicalErrorInFor() {
@@ -22,7 +22,7 @@ public class SolutionUnreachable {
 			}else {
 				continue;
 			}
-			System.out.println("");
+//			System.out.println("");
 		}
 	}
 }
